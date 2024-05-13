@@ -13,6 +13,9 @@ class AutoStopHandler extends WidgetsBindingObserver {
         break;
       case AppLifecycleState.resumed:
         break;
+      default:
+        await BackgroundLocator.unRegisterLocationUpdate();
+        break;
     }
   }
 }

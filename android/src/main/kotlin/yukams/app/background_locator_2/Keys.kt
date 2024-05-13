@@ -3,106 +3,106 @@ package yukams.app.background_locator_2
 class Keys {
     companion object {
         @JvmStatic
-        val SHARED_PREFERENCES_KEY = "SHARED_PREFERENCES_KEY"
+        val SHARED_PREFERENCES_KEY:String = "SHARED_PREFERENCES_KEY"
 
         @JvmStatic
-        val CALLBACK_DISPATCHER_HANDLE_KEY = "CALLBACK_DISPATCHER_HANDLE_KEY"
+        val CALLBACK_DISPATCHER_HANDLE_KEY:String = "CALLBACK_DISPATCHER_HANDLE_KEY"
 
         @JvmStatic
-        val CALLBACK_HANDLE_KEY = "CALLBACK_HANDLE_KEY"
+        val CALLBACK_HANDLE_KEY:String = "CALLBACK_HANDLE_KEY"
 
         @JvmStatic
-        val NOTIFICATION_CALLBACK_HANDLE_KEY = "NOTIFICATION_CALLBACK_HANDLE_KEY"
+        val NOTIFICATION_CALLBACK_HANDLE_KEY:String = "NOTIFICATION_CALLBACK_HANDLE_KEY"
 
         @JvmStatic
-        val INIT_CALLBACK_HANDLE_KEY = "INIT_CALLBACK_HANDLE_KEY"
+        val INIT_CALLBACK_HANDLE_KEY:String = "INIT_CALLBACK_HANDLE_KEY"
 
         @JvmStatic
-        val INIT_DATA_CALLBACK_KEY = "INIT_DATA_CALLBACK_KEY"
+        val INIT_DATA_CALLBACK_KEY:String = "INIT_DATA_CALLBACK_KEY"
 
         @JvmStatic
-        val DISPOSE_CALLBACK_HANDLE_KEY = "DISPOSE_CALLBACK_HANDLE_KEY"
+        val DISPOSE_CALLBACK_HANDLE_KEY:String = "DISPOSE_CALLBACK_HANDLE_KEY"
 
         @JvmStatic
-        val CHANNEL_ID = "app.yukams/locator_plugin"
+        val CHANNEL_ID:String = "app.yukams/locator_plugin"
 
         @JvmStatic
-        val BACKGROUND_CHANNEL_ID = "app.yukams/locator_plugin_background"
+        val BACKGROUND_CHANNEL_ID:String = "app.yukams/locator_plugin_background"
 
         @JvmStatic
-        val METHOD_SERVICE_INITIALIZED = "LocatorService.initialized"
+        val METHOD_SERVICE_INITIALIZED:String = "LocatorService.initialized"
 
         @JvmStatic
-        val METHOD_PLUGIN_INITIALIZE_SERVICE = "LocatorPlugin.initializeService"
+        val METHOD_PLUGIN_INITIALIZE_SERVICE:String = "LocatorPlugin.initializeService"
 
         @JvmStatic
-        val METHOD_PLUGIN_REGISTER_LOCATION_UPDATE = "LocatorPlugin.registerLocationUpdate"
+        val METHOD_PLUGIN_REGISTER_LOCATION_UPDATE:String = "LocatorPlugin.registerLocationUpdate"
 
         @JvmStatic
-        val METHOD_PLUGIN_UN_REGISTER_LOCATION_UPDATE = "LocatorPlugin.unRegisterLocationUpdate"
+        val METHOD_PLUGIN_UN_REGISTER_LOCATION_UPDATE:String = "LocatorPlugin.unRegisterLocationUpdate"
 
         @JvmStatic
-        val METHOD_PLUGIN_IS_REGISTER_LOCATION_UPDATE = "LocatorPlugin.isRegisterLocationUpdate"
+        val METHOD_PLUGIN_IS_REGISTER_LOCATION_UPDATE:String = "LocatorPlugin.isRegisterLocationUpdate"
 
         @JvmStatic
-        val METHOD_PLUGIN_IS_SERVICE_RUNNING = "LocatorPlugin.isServiceRunning"
+        val METHOD_PLUGIN_IS_SERVICE_RUNNING:String = "LocatorPlugin.isServiceRunning"
 
         @JvmStatic
-        val METHOD_PLUGIN_UPDATE_NOTIFICATION = "LocatorPlugin.updateNotification"
+        val METHOD_PLUGIN_UPDATE_NOTIFICATION:String = "LocatorPlugin.updateNotification"
 
         @JvmStatic
-        val ARG_INIT_CALLBACK = "initCallback"
+        val ARG_INIT_CALLBACK:String = "initCallback"
 
         @JvmStatic
-        val ARG_INIT_DATA_CALLBACK = "initDataCallback"
+        val ARG_INIT_DATA_CALLBACK:String = "initDataCallback"
 
         @JvmStatic
-        val ARG_DISPOSE_CALLBACK = "disposeCallback"
+        val ARG_DISPOSE_CALLBACK:String = "disposeCallback"
 
         @JvmStatic
-        val ARG_IS_MOCKED = "is_mocked"
+        val ARG_IS_MOCKED:String = "is_mocked"
 
         @JvmStatic
-        val ARG_LATITUDE = "latitude"
+        val ARG_LATITUDE:String = "latitude"
 
         @JvmStatic
-        val ARG_LONGITUDE = "longitude"
+        val ARG_LONGITUDE:String = "longitude"
 
         @JvmStatic
-        val ARG_ACCURACY = "accuracy"
+        val ARG_ACCURACY:String = "accuracy"
 
         @JvmStatic
-        val ARG_ALTITUDE = "altitude"
+        val ARG_ALTITUDE:String = "altitude"
 
         @JvmStatic
-        val ARG_SPEED = "speed"
+        val ARG_SPEED:String = "speed"
 
         @JvmStatic
-        val ARG_SPEED_ACCURACY = "speed_accuracy"
+        val ARG_SPEED_ACCURACY:String = "speed_accuracy"
 
         @JvmStatic
-        val ARG_HEADING = "heading"
+        val ARG_HEADING:String = "heading"
 
         @JvmStatic
-        val ARG_TIME = "time"
+        val ARG_TIME:String = "time"
 
         @JvmStatic
-        val ARG_PROVIDER = "provider"
+        val ARG_PROVIDER:String = "provider"
 
         @JvmStatic
-        val ARG_CALLBACK = "callback"
+        val ARG_CALLBACK:String = "callback"
 
         @JvmStatic
-        val ARG_NOTIFICATION_CALLBACK = "notificationCallback"
+        val ARG_NOTIFICATION_CALLBACK:String = "notificationCallback"
 
         @JvmStatic
-        val ARG_LOCATION = "location"
+        val ARG_LOCATION:String = "location"
 
         @JvmStatic
-        val ARG_SETTINGS = "settings"
+        val ARG_SETTINGS:String = "settings"
 
         @JvmStatic
-        val ARG_CALLBACK_DISPATCHER = "callbackDispatcher"
+        val ARG_CALLBACK_DISPATCHER:String = "callbackDispatcher"
 
 
         @JvmStatic

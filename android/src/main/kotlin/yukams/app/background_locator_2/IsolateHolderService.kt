@@ -293,7 +293,7 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
         }
     }
 
-    override fun onLocationUpdated(location: HashMap<Any, Any>?) {
+    override fun onLocationUpdated(location: HashMap<String?, Any?>?) {
         try {
             context?.let {
                 FlutterInjector.instance().flutterLoader().ensureInitializationComplete(
@@ -314,7 +314,7 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
                         )
                     } as Long
 
-                val result: HashMap<Any, Any> =
+                val result: HashMap<String?, Any?>? =
                     hashMapOf(
                         Keys.ARG_CALLBACK to callback,
                         Keys.ARG_LOCATION to location
@@ -327,7 +327,7 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
         }
     }
 
-    private fun sendLocationEvent(result: HashMap<Any, Any>) {
+    private fun sendLocationEvent(result: HashMap<String?, Any?>?) {
         //https://github.com/flutter/plugins/pull/1641
         //https://github.com/flutter/flutter/issues/36059
         //https://github.com/flutter/plugins/pull/1641/commits/4358fbba3327f1fa75bc40df503ca5341fdbb77d
