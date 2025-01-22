@@ -64,14 +64,28 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
                 }
         }
 
-        @JvmStatic
-        private fun startLocatorService(context: Context) {
+        fun startLocatorService(context: Context, service: IsolateHolderService) {
             context.applicationContext?.let { applicationContext ->
                 if (backgroundEngine == null) {
-                    backgroundEngine = FlutterEngine(applicationContext)
+
 
                     // Charger les dart entrypoints de manière synchrone
                     try {
+
+                        // S'assurer que Flutter est initialisé
+                        FlutterInjector.instance().flutterLoader().ensureInitializationComplete(
+                            applicationContext, null
+                        )
+                        backgroundEngine = FlutterEngine(applicationContext)
+
+                        // Initialiser le channel avec le bon type
+                        val backgroundChannel = MethodChannel(
+                            backgroundEngine?.dartExecutor?.binaryMessenger!!,
+                            methodChannelName
+                        )
+                        backgroundChannel.setMethodCallHandler(service)
+
+                        // Exécuter le point d'entrée Dart
                         backgroundEngine?.dartExecutor?.executeDartEntrypoint(
                             DartExecutor.DartEntrypoint(
                                 FlutterInjector.instance().flutterLoader().findAppBundlePath(),
@@ -80,14 +94,10 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
                         )
                     } catch (e: Exception) {
                         Log.e("IsolateHolderService", "Error executing Dart entrypoint: ${e.message}")
+                        e.printStackTrace()
                     }
 
-                    // Initialiser le channel avec le bon type
-                    val backgroundChannel = MethodChannel(
-                        backgroundEngine?.dartExecutor?.binaryMessenger!!,
-                        methodChannelName
-                    )
-                    backgroundChannel.setMethodCallHandler(this)
+
                 }
             }
         }
@@ -113,10 +123,11 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
     override fun onCreate() {
         super.onCreate()
         try {
-            startLocatorService(this)
+            startLocatorService(this,this)
             startForeground(notificationId, getNotification())
         } catch (e: Exception) {
             Log.e("IsolateHolderService", "Error in onCreate: ${e.message}")
+            e.printStackTrace()
             stopSelf()
         }
 
@@ -220,11 +231,33 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        // Vérification des permissions au démarrage
-        if (!hasLocationPermission()) {
-            Log.e("IsolateHolderService", "Missing location permission")
-            stopSelf()
-            return START_NOT_STICKY
+        if (intent == null) {
+            if (!hasLocationPermission()) {
+                Log.e("IsolateHolderService", "Missing location permission")
+                stopSelf()
+                return START_NOT_STICKY
+            }
+            return START_STICKY
+        }
+
+        when (intent.action) {
+            ACTION_SHUTDOWN -> {
+                isServiceRunning = false
+                shutdownHolderService()
+            }
+            ACTION_START -> {
+                if (isServiceRunning) {
+                    isServiceRunning = false
+                    shutdownHolderService()
+                }
+                isServiceRunning = true
+                startHolderService(intent)
+            }
+            ACTION_UPDATE_NOTIFICATION -> {
+                if (isServiceRunning) {
+                    updateNotification(intent)
+                }
+            }
         }
 
         return START_STICKY
