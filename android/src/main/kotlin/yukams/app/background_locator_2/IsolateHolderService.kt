@@ -25,13 +25,6 @@ import androidx.core.app.ActivityCompat
 
 class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateListener, Service() {
     companion object {
-
-        @JvmStatic
-        var backgroundEngine: FlutterEngine? = null
-
-        @JvmStatic
-        private val methodChannelName: String = "background_locator"
-
         @JvmStatic
         val ACTION_SHUTDOWN = "SHUTDOWN"
 
@@ -43,6 +36,9 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
 
         @JvmStatic
         private val WAKELOCK_TAG = "IsolateHolderService::WAKE_LOCK"
+
+        @JvmStatic
+        var backgroundEngine: FlutterEngine? = null
 
         @JvmStatic
         private val notificationId = 1
@@ -62,44 +58,6 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
                 }else{
                     messenger
                 }
-        }
-
-        fun startLocatorService(context: Context, service: IsolateHolderService) {
-            context.applicationContext?.let { applicationContext ->
-                if (backgroundEngine == null) {
-
-
-                    // Charger les dart entrypoints de manière synchrone
-                    try {
-
-                        // S'assurer que Flutter est initialisé
-                        FlutterInjector.instance().flutterLoader().ensureInitializationComplete(
-                            applicationContext, null
-                        )
-                        backgroundEngine = FlutterEngine(applicationContext)
-
-                        // Initialiser le channel avec le bon type
-                        val backgroundChannel = MethodChannel(
-                            backgroundEngine?.dartExecutor?.binaryMessenger!!,
-                            methodChannelName
-                        )
-                        backgroundChannel.setMethodCallHandler(service)
-
-                        // Exécuter le point d'entrée Dart
-                        backgroundEngine?.dartExecutor?.executeDartEntrypoint(
-                            DartExecutor.DartEntrypoint(
-                                FlutterInjector.instance().flutterLoader().findAppBundlePath(),
-                                "callbackDispatcher"
-                            )
-                        )
-                    } catch (e: Exception) {
-                        Log.e("IsolateHolderService", "Error executing Dart entrypoint: ${e.message}")
-                        e.printStackTrace()
-                    }
-
-
-                }
-            }
         }
     }
 
@@ -122,15 +80,8 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
 
     override fun onCreate() {
         super.onCreate()
-        try {
-            startLocatorService(this,this)
-            startForeground(notificationId, getNotification())
-        } catch (e: Exception) {
-            Log.e("IsolateHolderService", "Error in onCreate: ${e.message}")
-            e.printStackTrace()
-            stopSelf()
-        }
-
+        startLocatorService(this)
+        startForeground(notificationId, getNotification())
     }
 
     private fun start() {
@@ -155,7 +106,7 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
             // Notification channel is available in Android O and up
             val channel = NotificationChannel(
                 Keys.CHANNEL_ID, notificationChannelName,
-                NotificationManager.IMPORTANCE_HIGH
+                NotificationManager.IMPORTANCE_LOW
             )
 
             (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
@@ -181,13 +132,11 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
             .setColor(notificationIconColor)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
-            .setAutoCancel(false)
             .setOnlyAlertOnce(true) // so when data is updated don't make sound and alert in android 8.0+
             .setOngoing(true)
             .build()
     }
 
-    /*
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.e("IsolateHolderService", "onStartCommand => intent.action : ${intent?.action}")
         if(intent == null) {
@@ -195,7 +144,6 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 Log.e("IsolateHolderService", "app has crashed, stopping it")
                 stopSelf()
-                return START_NOT_STICKY
             }
             else {
                 return super.onStartCommand(intent, flags, startId)
@@ -226,52 +174,6 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
         }
 
         return START_STICKY
-    }*/
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        super.onStartCommand(intent, flags, startId)
-
-        if (intent == null) {
-            if (!hasLocationPermission()) {
-                Log.e("IsolateHolderService", "Missing location permission")
-                stopSelf()
-                return START_NOT_STICKY
-            }
-            return START_STICKY
-        }
-
-        when (intent.action) {
-            ACTION_SHUTDOWN -> {
-                isServiceRunning = false
-                shutdownHolderService()
-            }
-            ACTION_START -> {
-                if (isServiceRunning) {
-                    isServiceRunning = false
-                    shutdownHolderService()
-                }
-                isServiceRunning = true
-                startHolderService(intent)
-            }
-            ACTION_UPDATE_NOTIFICATION -> {
-                if (isServiceRunning) {
-                    updateNotification(intent)
-                }
-            }
-        }
-
-        return START_STICKY
-    }
-
-    private fun hasLocationPermission(): Boolean {
-        return ActivityCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun startHolderService(intent: Intent) {
